@@ -15,13 +15,13 @@
     }
     *{box-sizing:border-box}
     body {
-	  margin: 0;
-	  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-	  background: linear-gradient(to bottom, #8ec5fc 0%, #f9f586 100%);
-	  color: var(--ink);
-	  min-height: 100vh;
-	}
-	  
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(to bottom, #8ec5fc 0%, #f9f586 100%);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
     .page{max-width:1100px;margin:24px auto;padding:0 16px}
     .two-col{display:flex;border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(0,0,0,.08);background:#fff}
 
@@ -81,46 +81,41 @@
     }
     .dropzone.drag{background:#eef4ff;border-color:var(--accent)}
     .form-line{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:12px}
-	   .footer-controls {
-	  display: flex;
-	  flex-direction: column;       /* stack checkbox above button */
-	  align-items: stretch;         /* make the button full width */
-	  gap: 10px;
-	  margin-top: 20px;
-	  padding-top: 12px;
-	  border-top: 1px solid var(--sep);
-	}
 
-	.footer-controls label {
-	  display: flex;
-	  align-items: center;
-	  gap: 8px;
-	  font-size: 0.95rem;
-	  color: var(--muted);
-	  justify-content: left;
-	}
-
-	.footer-controls .btn {
-	  width: 100%;
-	  padding: 14px;
-	  font-weight: 600;
-	  font-size: 1rem;
-	  border-radius: 12px;
-	  background: var(--accent);
-	  color: white;
-	  cursor: pointer;
-	  transition: background 0.2s ease;
-	}
-
-	.footer-controls .btn:hover {
-	  background: #6884ff;
-	}
-
-    .btn{
-      border:0;border-radius:10px;padding:10px 16px;font-weight:600;
-	  font-family:"poppins";
-      background:var(--accent);color:#fff;cursor:pointer
+    .footer-controls {
+      display: flex;
+      flex-direction: column;       /* stack checkbox above button */
+      align-items: stretch;         /* make the button full width */
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid var(--sep);
     }
+
+    .footer-controls label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      justify-content: left;
+    }
+
+    .footer-controls .btn {
+      width: 100%;
+      padding: 14px;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .footer-controls .btn:hover { background: #6884ff; }
+
     .btn[disabled]{opacity:.5;cursor:not-allowed}
     .note{font-size:.9rem;color:var(--muted)}
 
@@ -137,9 +132,9 @@
       <!-- Left column (sticky) -->
       <aside class="sidebar">
         <h1>About this</h1>
-		<h4>My name is Reeeem</h4>
+        <h4>My name is Reeeem</h4>
         <p>I love cars, they are the best. What I love mostly about them is that they are purrfect</p>
-		<i>Property of: Reem Madison</i>
+        <i>Property of: Reem Madison</i>
       </aside>
 
       <div class="separator"></div>
@@ -151,7 +146,7 @@
 
         <div class="slideshow-wrap">
           <div class="slideshow-container" id="slideshow" aria-live="polite">
-            <!-- Your existing images -->
+            <!-- Initial images -->
             <div class="slide fade"><img src="image (1).jpeg" alt="Cat 1"></div>
             <div class="slide fade"><img src="image (2).jpeg" alt="Cat 2"></div>
             <div class="slide fade"><img src="image (3).jpeg" alt="Cat 3"></div>
@@ -184,16 +179,14 @@
             <input id="file" type="file" accept="image/*" multiple />
           </div>
 
-          <!-- bottom footer with button + checkbox together -->
-        <div class="footer-controls">
-		  <label>
-			<input type="checkbox" id="persist" />
-			Save added photos to this browser
-		  </label>
-
-		  <button class="btn" id="addBtn" disabled>Add to slideshow</button>
-		</div>
-
+          <!-- bottom footer with checkbox above the button -->
+          <div class="footer-controls">
+            <label>
+              <input type="checkbox" id="persist" />
+              Save added photos to this browser
+            </label>
+            <button class="btn" id="addBtn" disabled>Add to slideshow</button>
+          </div>
 
           <p class="note" style="margin-top:8px">Photos are processed locally in your browser (no upload to a server).</p>
         </section>
@@ -201,151 +194,140 @@
     </div>
   </div>
 
-<script>
-	/* ---------- Slideshow with controls ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  // your slideshow setup: ensureDots(); setActive(0); resetAutoplay(); etc.
-	let index = 0, timer = null;
-    const slides = () => document.getElementsByClassName("slide");
-    const dotsWrap = document.getElementById("dots");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+  <!-- One unified script: slideshow + uploader (browser-only) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      /* ---------- Slideshow core ---------- */
+      let index = 0, timer = null;
+      const slides = () => document.getElementsByClassName("slide");
+      const dotsWrap = document.getElementById("dots");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
 
-    function ensureDots(){
-      const count = slides().length;
-      while (dotsWrap.children.length <script count){
-        const d = document.createElement("span");
-        d.className = "dot";
-        const i = dotsWrap.children.length;
-        d.addEventListener("click", ()=>goTo(i));
-        dotsWrap.appendChild(d);
-      }
-    }
-    function setActive(n){
-      [...slides()].forEach(s=>s.style.display="none");
-      [...dotsWrap.children].forEach(d=>d.classList.remove("active"));
-      slides()[n].style.display = "block";
-      dotsWrap.children[n]?.classList.add("active");
-    }
-    function goTo(n){
-      index = (n + slides().length) % slides().length;
-      setActive(index);
-      resetAutoplay();
-    }
-    function next(){ goTo(index + 1); }
-    function prev(){ goTo(index - 1); }
-
-    function resetAutoplay(){
-      if (timer) clearInterval(timer);
-      timer = setInterval(next, 3000);
-    }
-
-    // keyboard support
-    document.addEventListener("keydown", (e)=>{
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft")  prev();
-    });
-    prevBtn.addEventListener("click", prev);
-    nextBtn.addEventListener("click", next);
-
-    ensureDots(); setActive(0); resetAutoplay();
-});
-    </script>
-
-<script>
-    /* ---------- Add-your-cat (client-side) ---------- */
-    function addSlideFromSrc(src, alt="User cat"){
-      const container = document.getElementById("slideshow");
-      const d = document.createElement("div");
-      d.className = "slide fade";
-      const img = document.createElement("img");
-      img.src = src; img.alt = alt;
-      d.appendChild(img);
-      container.insertBefore(d, container.firstChild); // add to start
-      ensureDots();
-      goTo(0); // show newest
-    }
-
-    const STORAGE_KEY = "reemCats";
-    // restore persisted images
-    (function restore(){
-      try{
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        saved.forEach(src => addSlideFromSrc(src, "Saved cat"));
-      }catch(_){}
-    })();
-
-    const fileInput = document.getElementById("file");
-    const addBtn = document.getElementById("addBtn");
-    const dropzone = document.getElementById("dropzone");
-    let selected = [];
-
-    function enable(){ addBtn.disabled = selected.length === 0; }
-
-    fileInput.addEventListener("change", e=>{
-      selected = [...e.target.files];
-      enable();
-    });
-
-    ["dragenter","dragover"].forEach(ev=>{
-      dropzone.addEventListener(ev, e=>{
-        e.preventDefault(); e.stopPropagation();
-        dropzone.classList.add("drag");
-      });
-    });
-    ["dragleave","drop"].forEach(ev=>{
-      dropzone.addEventListener(ev, e=>{
-        e.preventDefault(); e.stopPropagation();
-        if (ev==="drop"){
-          const items = e.dataTransfer.files;
-          selected = [...items].filter(f=>f.type.startsWith("image/"));
-          fileInput.files = items;
-          enable();
+      function ensureDots(){
+        const count = slides().length;
+        while (dotsWrap.children.length < count){
+          const d = document.createElement("span");
+          d.className = "dot";
+          const i = dotsWrap.children.length;
+          d.addEventListener("click", ()=>goTo(i));
+          dotsWrap.appendChild(d);
         }
-        dropzone.classList.remove("drag");
+      }
+      function setActive(n){
+        [...slides()].forEach(s=>s.style.display="none");
+        [...dotsWrap.children].forEach(d=>d.classList.remove("active"));
+        if (slides().length === 0) return;
+        slides()[n].style.display = "block";
+        dotsWrap.children[n]?.classList.add("active");
+      }
+      function goTo(n){
+        if (slides().length === 0) return;
+        index = (n + slides().length) % slides().length;
+        setActive(index);
+        resetAutoplay();
+      }
+      function next(){ goTo(index + 1); }
+      function prev(){ goTo(index - 1); }
+      function resetAutoplay(){
+        if (timer) clearInterval(timer);
+        if (slides().length > 1) timer = setInterval(next, 3000);
+      }
+
+      // keyboard support
+      document.addEventListener("keydown", (e)=>{
+        if (e.key === "ArrowRight") next();
+        if (e.key === "ArrowLeft")  prev();
+      });
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      ensureDots(); setActive(0); resetAutoplay();
+
+      /* ---------- Public helper so uploader can add slides ---------- */
+      window.addSlideFromSrc = function addSlideFromSrc(src, alt="User cat"){
+        const container = document.getElementById("slideshow");
+        const d = document.createElement("div");
+        d.className = "slide fade";
+        const img = document.createElement("img");
+        img.src = src; img.alt = alt;
+        d.appendChild(img);
+        // Add to the end to preserve order, or use insertBefore to show newest first
+        container.appendChild(d);
+        ensureDots();
+        goTo(slides().length - 1); // jump to the newly added
+      };
+
+      /* ---------- Uploader (browser-only) ---------- */
+      const STORAGE_KEY = "reemCats";
+      const fileInput = document.getElementById("file");
+      const addBtn = document.getElementById("addBtn");
+      const dropzone = document.getElementById("dropzone");
+      let selected = [];
+
+      function enable(){ addBtn.disabled = selected.length === 0; }
+
+      // restore persisted images
+      (function restore(){
+        try{
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+          saved.forEach(src => window.addSlideFromSrc(src, "Saved cat"));
+        }catch(_){}
+      })();
+
+      fileInput.addEventListener("change", e=>{
+        selected = [...e.target.files];
+        enable();
+      });
+
+      ["dragenter","dragover"].forEach(ev=>{
+        dropzone.addEventListener(ev, e=>{
+          e.preventDefault(); e.stopPropagation();
+          dropzone.classList.add("drag");
+        });
+      });
+      ["dragleave","drop"].forEach(ev=>{
+        dropzone.addEventListener(ev, e=>{
+          e.preventDefault(); e.stopPropagation();
+          if (ev==="drop"){
+            const items = e.dataTransfer.files;
+            selected = [...items].filter(f=>f.type.startsWith("image/"));
+            fileInput.files = items;
+            enable();
+          }
+          dropzone.classList.remove("drag");
+        });
+      });
+      dropzone.addEventListener("click", ()=> fileInput.click());
+
+      function fileToDataURL(file){
+        return new Promise((res,rej)=>{
+          const fr = new FileReader();
+          fr.onload = ()=>res(fr.result);
+          fr.onerror = rej;
+          fr.readAsDataURL(file);
+        });
+      }
+
+      addBtn.addEventListener("click", async ()=>{
+        const persist = document.getElementById("persist").checked;
+        const toSave = [];
+        for (const f of selected){
+          try{
+            const dataUrl = await fileToDataURL(f);
+            window.addSlideFromSrc(dataUrl, f.name);
+            if (persist) toSave.push(dataUrl);
+          }catch(e){ console.error(e); }
+        }
+        if (toSave.length){
+          try{
+            const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(existing.concat(toSave)));
+          }catch(e){ alert("Could not save all images (storage may be full)."); }
+        }
+        selected = []; fileInput.value = ""; enable();
       });
     });
-    dropzone.addEventListener("click", ()=> fileInput.click());
-
-    function fileToDataURL(file){
-      return new Promise((res,rej)=>{
-        const fr = new FileReader();
-        fr.onload = ()=>res(fr.result);
-        fr.onerror = rej;
-        fr.readAsDataURL(file);
-      });
-    }
-
-    addBtn.addEventListener("click", async ()=>{
-      const persist = document.getElementById("persist").checked;
-      const toSave = [];
-      for (const f of selected){
-        try{
-          const dataUrl = await fileToDataURL(f);
-          addSlideFromSrc(dataUrl, f.name);
-          if (persist) toSave.push(dataUrl);
-        }catch(e){ console.error(e); }
-      }
-      if (toSave.length){
-        try{
-          const existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(existing.concat(toSave)));
-        }catch(e){ alert("Could not save all images (storage may be full)."); }
-      }
-      selected = []; fileInput.value = ""; enable();
-    });
-
-</script>
-
-
-
-	
+  </script>
 </body>
 </html>
-
-
-
-
-
-
-
