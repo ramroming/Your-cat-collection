@@ -201,9 +201,11 @@
     </div>
   </div>
 
-  <script>
-    /* ---------- Slideshow with controls ---------- */
-    let index = 0, timer = null;
+<script>
+	/* ---------- Slideshow with controls ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // your slideshow setup: ensureDots(); setActive(0); resetAutoplay(); etc.
+	let index = 0, timer = null;
     const slides = () => document.getElementsByClassName("slide");
     const dotsWrap = document.getElementById("dots");
     const prevBtn = document.getElementById("prevBtn");
@@ -247,6 +249,8 @@
     nextBtn.addEventListener("click", next);
 
     ensureDots(); setActive(0); resetAutoplay();
+});
+    
 
     /* ---------- Add-your-cat (client-side) ---------- */
     function addSlideFromSrc(src, alt="User cat"){
@@ -394,6 +398,7 @@
 	
 </body>
 </html>
+
 
 
 
