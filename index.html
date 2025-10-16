@@ -338,66 +338,69 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
-  // ---- Cloudinary config (fill these) ----
-  const CLOUD_NAME = "dedvwwfip";
-  const UPLOAD_PRESET = "reems-cat-collection"; // from step 1
+document.addEventListener('DOMContentLoaded', () => {
+  // ====== Cloudinary config (fill these with your real values) ======
+  const CLOUD_NAME = "dedvwwfip";          // e.g. "reemcats"
+  const UPLOAD_PRESET = "reems-cat-collection";  // e.g. "cats_unsigned"
   const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${dedvwwfip}/image/upload`;
 
-  // Upload a single File object to Cloudinary (unsigned)
+  // ====== Grab UI elements ======
+  const fileInput = document.getElementById("file");
+  const addBtn    = document.getElementById("addBtn");
+
+  if (!fileInput || !addBtn) {
+    console.error("Missing #file or #addBtn elements. Check your HTML IDs.");
+    return;
+  }
+
+  // Enable/disable button based on file selection
+  function updateButtonState() {
+    addBtn.disabled = !(fileInput.files && fileInput.files.length);
+  }
+  fileInput.addEventListener("change", updateButtonState);
+  updateButtonState();
+
+  // Upload one file to Cloudinary (unsigned)
   async function uploadToCloudinary(file) {
     const fd = new FormData();
     fd.append("file", file);
     fd.append("upload_preset", UPLOAD_PRESET);
-    // Optional: keep uploads organized in a folder
-    // fd.append("folder", "reem-cats");
-
+    // Optional: fd.append("folder", "reem-cats");
     const res = await fetch(CLOUDINARY_URL, { method: "POST", body: fd });
-    if (!res.ok) throw new Error("Upload failed");
-    return res.json(); // -> { secure_url, public_id, ... }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || "Upload failed");
+    }
+    return res.json(); // { secure_url, public_id, ... }
   }
 
-  // Hook into your existing UI
-  const fileInput = document.getElementById("file");
-  const addBtn = document.getElementById("addBtn");
-
-  // OPTIONAL: enable/disable button when files selected
-  fileInput.addEventListener("change", () => {
-    addBtn.disabled = !(fileInput.files && fileInput.files.length);
-  });
-
-  // Replace your existing addBtn click handler with this:
+  // Click handler
   addBtn.addEventListener("click", async () => {
     if (!fileInput.files || !fileInput.files.length) return;
 
-    addBtn.disabled = true; 
+    addBtn.disabled = true;
+    const originalLabel = addBtn.textContent;
     addBtn.textContent = "Uploading…";
 
-    const uploadedURLs = [];
-    for (const file of fileInput.files) {
-      try {
-        const result = await uploadToCloudinary(file);
-        // Show it immediately in the slideshow
-        addSlideFromSrc(result.secure_url, file.name);
-        uploadedURLs.push(result.secure_url);
-      } catch (e) {
-        console.error(e);
-        alert("Upload failed for: " + file.name);
+    try {
+      for (const f of fileInput.files) {
+        const result = await uploadToCloudinary(f);
+        // This function should already exist in your page:
+        // it appends an <img> to the slideshow and refreshes dots/controls
+        addSlideFromSrc(result.secure_url, f.name);
       }
+    } catch (e) {
+      console.error(e);
+      alert("Cloudinary upload error:\n" + e.message);
+    } finally {
+      fileInput.value = "";
+      updateButtonState();
+      addBtn.textContent = originalLabel;
     }
-
-    // Optional: remember hosted URLs locally
-    if (uploadedURLs.length) {
-      const key = "reemCatsURLs";
-      const existing = JSON.parse(localStorage.getItem(key) || "[]");
-      localStorage.setItem(key, JSON.stringify(existing.concat(uploadedURLs)));
-    }
-
-    // Reset UI
-    fileInput.value = "";
-    addBtn.textContent = "Add to slideshow";
-    addBtn.disabled = true;
   });
-  </script>
+});
+</script>
+
 	
 </body>
 </html>
